@@ -97,9 +97,14 @@ namespace TiCC {
     std::string prog_name() const { return _prog_name; };
     std::string get_short_options() const;
     std::string get_long_options() const;
+
     bool find( const char c, std::string& s, bool& b ) const {
       return is_present_internal( c, s, b );
     }
+    bool find( const std::string& w, std::string& s ) const {
+      return is_present_internal( w, s );
+    }
+
     bool is_present( const char c, std::string& v, bool& b ) const {
       return is_present_internal( c, v, b );
     }
@@ -123,9 +128,6 @@ namespace TiCC {
       return false;
     }
 
-    bool find( const std::string& w, std::string& s ) const {
-      return is_present_internal( w, s );
-    }
     bool is_present( const std::string& s ) const {
       std::string v;
       return is_present_internal( s, v );
@@ -140,6 +142,7 @@ namespace TiCC {
       }
       return false;
     }
+
     bool extract( const char c, std::string& v, bool& b){
       return extract_internal( c, v, b);
     }
@@ -166,7 +169,6 @@ namespace TiCC {
       }
       return false;
     }
-
     bool extract( const std::string& s ){
       std::string v;
       return extract_internal( s, v );

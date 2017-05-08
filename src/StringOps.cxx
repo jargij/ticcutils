@@ -39,7 +39,7 @@ using namespace std;
 namespace TiCC {
 
   string BuildInfo() {
-    // cannot be defined in the header becaus otherwise __DATE__ ans
+    // cannot be defined in the header because otherwise __DATE__ ans
     // __TIME__ would be dynamic. (changing every time it is included)
     return VersionName() + "-" + Version() + ". Compiled on "
       + __DATE__ + " " + __TIME__;
@@ -124,7 +124,7 @@ namespace TiCC {
 
   size_t split_at( const string& src, vector<string>& results,
 		   const string& sep, bool exact ){
-    // split a string into substrings, using seps as separator
+    // split a string into substrings, using the string 'seps' as a separator
     // silently skip empty entries (e.g. when two or more separators co-incide)
     // unless exact=true;
     if ( sep.empty() ){
@@ -151,8 +151,8 @@ namespace TiCC {
 
   size_t split_at_first_of( const string& src, vector<string>& results,
 			    const string& seps, bool exact ){
-    // split a string into substrings, using the characters in seps
-    // as seperators
+    // split a string into substrings, using any of the characters in seps
+    // as seperator
     // silently skip empty entries (e.g. when two or more seperators co-incide)
     // unless exact=true;
     if ( seps.empty() ){

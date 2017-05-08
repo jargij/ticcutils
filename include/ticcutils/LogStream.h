@@ -95,7 +95,7 @@ namespace TiCC {
     void setlevel( LogLevel l ){ buf.Level( l ); };
     LogLevel getlevel() const{ return buf.Level(); };
     void associate( std::ostream& os ) { buf.AssocStream( os ); };
-    //  std::ostream& associate() const { return buf.AssocStream(); };
+    std::ostream& associate() const { return buf.AssocStream(); };
     void setstamp( LogFlag f ){ buf.StampFlag( f ); };
     LogFlag getstamp() const { return buf.StampFlag(); };
     void message( const std::string& s ){ buf.Message( s ); };
@@ -117,7 +117,7 @@ namespace TiCC {
   class Log{
   public:
     explicit Log( LogStream * );
-    explicit Log( LogStream& l );
+    explicit Log( LogStream& l ): Log(&l){};
     ~Log();
     LogStream& operator *();
   private:
@@ -130,7 +130,7 @@ namespace TiCC {
   class Dbg{
   public:
     explicit Dbg( LogStream * );
-    explicit Dbg( LogStream& l );
+    explicit Dbg( LogStream& l ): Dbg(&l){};
     ~Dbg();
     LogStream& operator *();
   private:
@@ -143,7 +143,7 @@ namespace TiCC {
   class xDbg{
   public:
     explicit xDbg( LogStream * );
-    explicit xDbg( LogStream& l );
+    explicit xDbg( LogStream& l ):xDbg(&l){};
     ~xDbg();
     LogStream& operator *();
   private:
@@ -156,7 +156,7 @@ namespace TiCC {
   class xxDbg{
   public:
     explicit xxDbg( LogStream * );
-    explicit xxDbg( LogStream& l );
+    explicit xxDbg( LogStream& l ):xxDbg(&l){};
     ~xxDbg();
     LogStream& operator *();
   private:
