@@ -77,8 +77,17 @@ namespace TiCC {
     LogStream( std::ostream&, const std::string& = "",
 	       LogFlag = StampBoth );
     LogStream( const LogStream&, const std::string&, LogFlag );
-    LogStream( const LogStream&, const std::string& );
-    LogStream( const LogStream * );
+  LogStream( const LogStream& ls ):
+    LogStream( ls, ls.message(), ls.getstamp() ){};
+  LogStream( const LogStream& ls, const std::string& m ):
+    LogStream( ls, m, ls.getstamp() ){};
+  LogStream( const LogStream *ls ):
+    LogStream( *ls, ls->message(), ls->getstamp() ){};
+  LogStream( const LogStream *ls, const std::string& m ):
+    LogStream( *ls, m, ls->getstamp() ){};
+  LogStream( const LogStream *ls, const std::string& m, LogFlag lf ):
+    LogStream( *ls, m, lf ){};
+
     bool set_single_threaded_mode();
     bool single_threaded() const { return single_threaded_mode; };
     void setthreshold( LogLevel t ){ buf.Threshold( t ); };
@@ -89,7 +98,7 @@ namespace TiCC {
     //  std::ostream& associate() const { return buf.AssocStream(); };
     void setstamp( LogFlag f ){ buf.StampFlag( f ); };
     LogFlag getstamp() const { return buf.StampFlag(); };
-    void message( const std::string& s ){ buf.Message( s.c_str() ); };
+    void message( const std::string& s ){ buf.Message( s ); };
     void addmessage( const std::string& );
     void addmessage( const int );
     const std::string& message() const { return buf.Message(); };

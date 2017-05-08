@@ -1,10 +1,10 @@
 AM_CPPFLAGS = -I@top_srcdir@/include
-AM_CXXFLAGS = -std=c++11 # -Weffc++
+AM_CXXFLAGS = -std=c++11 -g
 
 LDADD = libticcutils.la
 
 lib_LTLIBRARIES = libticcutils.la
-libticcutils_la_LDFLAGS = -version-info 2:0:0
+libticcutils_la_LDFLAGS = -version-info 3:0:0
 
 libticcutils_la_SOURCES = LogStream.cxx StringOps.cxx TreeHash.cxx \
 	Configuration.cxx Timer.cxx XMLtools.cxx zipper.cxx Tar.cxx \

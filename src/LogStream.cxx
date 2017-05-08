@@ -86,28 +86,6 @@ namespace TiCC {
     addmessage( message );
   }
 
-  LogStream::LogStream( const LogStream& ls, const string& message ):
-    ostream( &buf ),
-    buf( ls.buf.AssocStream(),
-	 ls.buf.Message(),
-	 ls.buf.StampFlag() ),
-    single_threaded_mode( ls.single_threaded_mode ){
-    buf.Level( ls.buf.Level() );
-    buf.Threshold( ls.buf.Threshold() );
-    addmessage( message );
-  }
-
-
-  LogStream::LogStream( const LogStream *ls ):
-    ostream( &buf ),
-    buf( ls->buf.AssocStream(),
-	 ls->buf.Message(),
-	 ls->buf.StampFlag() ),
-    single_threaded_mode( ls->single_threaded_mode ){
-    buf.Level( ls->buf.Level() );
-    buf.Threshold( ls->buf.Threshold() );
-  }
-
   void LogStream::addmessage( const string& s ){
     if ( !s.empty() ){
       string tmp = buf.Message();
