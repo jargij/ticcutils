@@ -29,6 +29,7 @@
 #include <cstdlib>
 #include "config.h"
 #include <iostream>
+#include <thread>
 #include <unistd.h>
 #include <stdexcept>
 
@@ -41,29 +42,24 @@ using namespace TiCC;
 class Sub1 {
 public:
   Sub1( LogStream& log ){
-    ls = new LogStream( log, "-SUB1" );
+    ls = new LogStream( log, "-SUB1", NoStamp );
     *Log(ls) << "created a sub1 " << endl;
-  }
-  void exec( int i ){
-    int sleeps = rand()%(i+1) + 1;
-    sleep(sleeps);
-    *Log(ls) << " 1" << endl;
   }
   LogStream *ls;
 };
 
-class Sub2 {
+void exec1( Sub1& s, int i ){
+  int sleeps = rand()%(5) + 1;
+  sleep(sleeps);
+  *Log(s.ls) << i << "-" << sleeps << endl;
+}
+
+class Sub2 : public Sub1 {
 public:
-  Sub2( LogStream* log ){
-    ls = log;
-    *Log(*ls) << "created a sub2 " << endl;
+  Sub2( LogStream& l ): Sub1(l){
+    ls = new LogStream( l, "-SUB2", StampMessage );
+    *Log(ls) << "created a sub2 " << endl;
   }
-  void exec( int i ){
-    int sleeps = rand()%(i+1) + 1;
-    sleep(sleeps);
-    *Log(ls) << " 2" << endl;
-  }
-  LogStream *ls;
 };
 
 class Sub3 {
@@ -72,23 +68,26 @@ public:
     ls = new LogStream( s.ls, "-SUB3", StampMessage );
     *Log(ls) << "created a sub3 " << endl;
   }
-  void exec( int i ){
-    int sleeps = rand()%(i+1) + 1;
-    sleep(sleeps);
-    *Log(ls) << " 3" << endl;
-  }
   LogStream *ls;
 };
+
+void exec3( Sub3& s, int i ){
+  int sleeps = rand()%(5) + 1;
+  sleep(sleeps);
+  *Log(s.ls) << i << "---" << sleeps << endl;
+}
 
 int main(){
   LogStream the_log( "main-log" );
   Sub1 sub1( the_log );
-  Sub2 sub2( &the_log );
-#pragma omp parallel for schedule(dynamic)
-  for ( int i = 0; i < 5; ++i ){
-    sub1.exec(i);
-    sub2.exec(i);
+  Sub2 sub2( the_log );
+  for ( int i = 0; i < 10; ++i ){
     Sub3 sub3( sub2 );
-    sub3.exec(i);
+    thread t1( exec1, std::ref(sub1), i );
+    thread t2( exec1, std::ref(sub2), i );
+    thread t3( exec3, std::ref(sub3), i );
+    t1.join();
+    t2.join();
+    t3.join();
   }
 }
