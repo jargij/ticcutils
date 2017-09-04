@@ -209,6 +209,15 @@ void test_opts_basic(){
   assertEqual( opts14.toString(), "-ab -ac -d-fiets --appel peer  --fout=goed" );
   v = opts14.getMassOpts();
   assertEqual( v.size(), 2 );
+  CL_Options opts15;
+  opts15.set_debug(true);
+  opts15.parse_args( "--fout=goed\\mis --jan=gek" );
+  assertEqual( opts15.toString(), "--fout=goed\\mis --jan=gek" );
+  string res;
+  opts15.extract("fout", res );
+  assertEqual( res, "goed\\mis" );
+  opts15.extract("jan", res );
+  assertEqual( res, "gek" );
 }
 
 void test_opts( CL_Options& opts ){
@@ -431,13 +440,8 @@ void test_tar( const string& path ){
   assertEqual( line, "a testfile." );
   assertNoThrow( mytar.extract_file_names( res, ".xml" ) );
   assertEqual( res.size(), 1 );
-#ifdef HAVE_BOOST_REGEX
   assertNoThrow( mytar.extract_file_names_match( res, "s*b" ) );
   assertEqual( res.size(), 3 );
-#else
-  assertNoThrow( mytar.extract_file_names_match( res, "txt" ) );
-  assertEqual( res.size(), 3 );
-#endif
 }
 
 void test_fileutils( const string& path ){
@@ -458,7 +462,6 @@ void test_fileutils( const string& path ){
   assertTrue( createPath( "/tmp/test/silly/files/path/raar" ) );
   assertFalse( createPath( "/tmp/test/silly/files/path/raar/sub" ) );
 
-#ifdef HAVE_BOOST_REGEX
   assertNoThrow( res = searchFilesMatch( path, "*.txt", false ) );
   // non recursive. should match small.txt
   assertEqual( res.size(), 1 );
@@ -471,7 +474,6 @@ void test_fileutils( const string& path ){
   assertNoThrow( res = searchFilesMatch( path, "s*[lb].txt" ) );
   // should match small.txt and sub1/sub.txt
   assertEqual( res.size(), 2 );
-#endif
 }
 
 void test_configuration( const string& path ){

@@ -1,6 +1,16 @@
 sudo: required
 dist: trusty
 
+group: edge
+
+notifications:
+  irc:
+    channels:
+      - "irc.uvt.nl#gitlama"
+    template:
+      - "%{repository_slug}#%{build_number} %{message} --> %{build_url}"
+    skip_join: true
+
 language: cpp
 matrix:
   include:
@@ -24,9 +34,13 @@ matrix:
       compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
-          packages: ['clang-3.7']
-      env: COMPILER=clang++-3.7
+          packages:
+            - libiomp-dev
+      env:
+       - COMPILER=clang++
+# libiomp is a very strange abberation in trusty
+# changed to libomp in newer Ubuntu versions.
+       - CXXFLAGS="-fopenmp=libiomp5"
 
 before_install:
   - sudo apt-get update

@@ -62,7 +62,6 @@ AX_TYPE_SOCKLEN_T
 
 # Checks for library functions.
 AC_CHECK_FUNCS([localtime_r gettimeofday mkdir getaddrinfo gethostbyaddr gethostbyname inet_ntoa memset socket strerror dup2 memmove ])
-AC_FUNC_MALLOC
 AC_FUNC_FORK
 
 AX_PTHREAD([],[AC_MSG_ERROR([We need pthread support!])])
@@ -72,11 +71,28 @@ if test x"$ax_pthread_ok" = xyes; then
    CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 fi
 
-AX_BOOST_BASE([1.50],
-       [AX_BOOST_REGEX
-        LIBS="$LIBS $BOOST_REGEX_LIB"],
-        [AC_MSG_NOTICE([No Boost support]) ])
+# only require boost for OLD gcc compilers AND als stdlib++
+# for now we HAV to stick to boost regex :{
 
+# AX_COMPILER_VENDOR
+# if test x"$ax_cv_cxx_compiler_vendor" = xgnu; then
+#   AX_COMPILER_VERSION
+#   AX_COMPARE_VERSION( [$ax_cv_cxx_compiler_version], [lt], [4.9],
+#                      [AX_BOOST_BASE( [1.50],
+#                                     [AX_BOOST_REGEX
+#                                     LIBS="$LIBS $BOOST_REGEX_LIB"
+#                                     AC_DEFINE(HAVE_WORKING_REGEX, 2 , Define to 2 if you have boost regular expresions )],
+#                                     [AC_MSG_ERROR([No Regular expression support available. Please install libboost-regex-dev, or update gcc])])],
+#                       AC_DEFINE(HAVE_WORKING_REGEX, 1 , Define to 1 if you have working native C++ regular expresions ) )
+# else
+#   AC_DEFINE(HAVE_WORKING_REGEX, 1 , Define to 1 if you have native C++ regular expresions)
+# fi
+
+AX_BOOST_BASE( [1.50],
+	       [AX_BOOST_REGEX
+	        LIBS="$LIBS $BOOST_REGEX_LIB"
+                AC_DEFINE(HAVE_WORKING_REGEX, 2 , Define to 2 if you have boost regular expresions )],
+               [AC_MSG_ERROR([No Regular expression support available. Please install libboost-regex-dev])])
 
 # ugly hack when PKG_CONFIG_PATH isn't defined.
 # couldn't get it to work otherwise
