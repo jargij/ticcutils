@@ -10,7 +10,7 @@ libticcutils_la_LDFLAGS = -version-info 3:0:0
 libticcutils_la_SOURCES = LogStream.cxx StringOps.cxx TreeHash.cxx \
 	Configuration.cxx Timer.cxx XMLtools.cxx zipper.cxx Tar.cxx \
 	FileUtils.cxx CommandLine.cxx SocketBasics.cxx ServerBase.cxx \
-	FdStream.cxx
+	FdStream.cxx Sema.cxx
 
 
 check_PROGRAMS = runtest testlogstream
