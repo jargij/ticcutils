@@ -42,14 +42,15 @@ using namespace TiCC;
 class Sub1 {
 public:
   Sub1( LogStream& log ){
-    ls = new LogStream( log, "-SUB1", NoStamp );
+    ls = new LogStream( log, "-SUB1", StampMessage );
     *Log(ls) << "created a sub1 " << endl;
   }
   LogStream *ls;
 };
 
 void exec1( Sub1& s, int i ){
-  int sleeps = rand()%(5) + 1;
+  *Log(s.ls) << i << endl;
+  int sleeps = rand()%(i+1) + 1;
   sleep(sleeps);
   *Log(s.ls) << i << "-" << sleeps << endl;
 }
@@ -62,17 +63,17 @@ public:
   }
 };
 
-class Sub3 {
+class Sub3 : public Sub1 {
 public:
-  Sub3( Sub2& s ){
-    ls = new LogStream( s.ls, "-SUB3", StampMessage );
+  Sub3( LogStream& l ): Sub1(l){
+    ls = new LogStream( l, "-SUB3", StampMessage );
     *Log(ls) << "created a sub3 " << endl;
   }
-  LogStream *ls;
 };
 
 void exec3( Sub3& s, int i ){
-  int sleeps = rand()%(5) + 1;
+  *Log(s.ls) << i << endl;
+  int sleeps = rand()%(int(3*(i+1))) + 1;
   sleep(sleeps);
   *Log(s.ls) << i << "---" << sleeps << endl;
 }
@@ -81,13 +82,30 @@ int main(){
   LogStream the_log( "main-log" );
   Sub1 sub1( the_log );
   Sub2 sub2( the_log );
+  Sub3 sub3( the_log );
   for ( int i = 0; i < 10; ++i ){
-    Sub3 sub3( sub2 );
-    thread t1( exec1, std::ref(sub1), i );
-    thread t2( exec1, std::ref(sub2), i );
-    thread t3( exec3, std::ref(sub3), i );
+    *Log(the_log) << "start loop " << i << endl;
+    thread t1( exec1, std::ref(sub1), 1 );
+    thread t2( exec1, std::ref(sub2), 2 );
+    thread t3( exec3, std::ref(sub3), 3 );
+    thread t4( exec1, std::ref(sub1), 4 );
+    thread t5( exec1, std::ref(sub2), 5 );
+    thread t6( exec3, std::ref(sub3), 6 );
+    thread t7( exec1, std::ref(sub1), 7 );
+    thread t8( exec1, std::ref(sub2), 8 );
+    thread t9( exec3, std::ref(sub3), 9 );
+    thread t10( exec3, std::ref(sub3), 10 );
+    *Log(the_log) << "wait for join " << endl;
     t1.join();
     t2.join();
     t3.join();
+    t4.join();
+    t5.join();
+    t6.join();
+    t7.join();
+    t8.join();
+    t9.join();
+    t10.join();
+    *Log(the_log) << "all joined " << endl;
   }
 }

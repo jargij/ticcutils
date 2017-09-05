@@ -1,5 +1,6 @@
 AM_CPPFLAGS = -I@top_srcdir@/include
-AM_CXXFLAGS = -std=c++11 -g
+AM_CXXFLAGS = -O3 -g -W -Wall -std=c++11
+#AM_CXXFLAGS = -O2 -g -fsanitize=thread -std=c++11
 
 LDADD = libticcutils.la
 
